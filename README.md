@@ -1,6 +1,6 @@
-# Airbnb JavaScript Style Guide() {
+# Import.io JavaScript Style Guide() {
 
-*A mostly reasonable approach to JavaScript*
+*A mostly reasonable approach to JavaScript, forked from our Airbnb friends*
 
 
 ## Table of Contents
@@ -192,6 +192,7 @@
     ```
 
   - Strings longer than 80 characters should be written across multiple lines using string concatenation.
+  - In case of long URLs, they should be divided in separate variables (apiUrl, parameters, …).
   - Note: If overused, long strings with concatenation could impact performance. [jsPerf](http://jsperf.com/ya-string-concat) & [Discussion](https://github.com/airbnb/javascript/issues/40)
 
     ```javascript
@@ -210,7 +211,7 @@
       'with this, you would get nowhere fast.';
     ```
 
-  - When programmatically building up a string, use Array#join instead of string concatenation. Mostly for IE: [jsPerf](http://jsperf.com/string-vs-array-concat/2).
+  - When programmatically building up a string, use String concatenation (easier to read).
 
     ```javascript
     var items,
@@ -231,7 +232,6 @@
 
     length = messages.length;
 
-    // bad
     function inbox(messages) {
       items = '<ul>';
 
@@ -240,17 +240,6 @@
       }
 
       return items + '</ul>';
-    }
-
-    // good
-    function inbox(messages) {
-      items = [];
-
-      for (i = 0; i < length; i++) {
-        items[i] = messages[i].message;
-      }
-
-      return '<ul><li>' + items.join('</li><li>') + '</li></ul>';
     }
     ```
 
@@ -277,7 +266,7 @@
       console.log('Welcome to the Internet. Please follow me.');
     })();
     ```
-
+  - Prefer named functions because the browser devtools display their names instead of `anonymous function`.
   - Never declare a function in a non-function block (if, while, etc). Assign the function to a variable instead. Browsers will allow you to do it, but they all interpret it differently, which is bad news bears.
   - **Note:** ECMA-262 defines a `block` as a list of statements. A function declaration is not a statement. [Read ECMA-262's note on this issue](http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf#page=97).
 
@@ -318,7 +307,7 @@
 
 ## Properties
 
-  - Use dot notation when accessing properties.
+  - Use dot notation when accessing properties (array notation is acceptable only for unconventional JavaScript property names).
 
     ```javascript
     var luke = {
@@ -458,96 +447,6 @@
     ```
 
 **[⬆ back to top](#table-of-contents)**
-
-
-## Hoisting
-
-  - Variable declarations get hoisted to the top of their scope, their assignment does not.
-
-    ```javascript
-    // we know this wouldn't work (assuming there
-    // is no notDefined global variable)
-    function example() {
-      console.log(notDefined); // => throws a ReferenceError
-    }
-
-    // creating a variable declaration after you
-    // reference the variable will work due to
-    // variable hoisting. Note: the assignment
-    // value of `true` is not hoisted.
-    function example() {
-      console.log(declaredButNotAssigned); // => undefined
-      var declaredButNotAssigned = true;
-    }
-
-    // The interpreter is hoisting the variable
-    // declaration to the top of the scope.
-    // Which means our example could be rewritten as:
-    function example() {
-      var declaredButNotAssigned;
-      console.log(declaredButNotAssigned); // => undefined
-      declaredButNotAssigned = true;
-    }
-    ```
-
-  - Anonymous function expressions hoist their variable name, but not the function assignment.
-
-    ```javascript
-    function example() {
-      console.log(anonymous); // => undefined
-
-      anonymous(); // => TypeError anonymous is not a function
-
-      var anonymous = function() {
-        console.log('anonymous function expression');
-      };
-    }
-    ```
-
-  - Named function expressions hoist the variable name, not the function name or the function body.
-
-    ```javascript
-    function example() {
-      console.log(named); // => undefined
-
-      named(); // => TypeError named is not a function
-
-      superPower(); // => ReferenceError superPower is not defined
-
-      var named = function superPower() {
-        console.log('Flying');
-      };
-    }
-
-    // the same is true when the function name
-    // is the same as the variable name.
-    function example() {
-      console.log(named); // => undefined
-
-      named(); // => TypeError named is not a function
-
-      var named = function named() {
-        console.log('named');
-      }
-    }
-    ```
-
-  - Function declarations hoist their name and the function body.
-
-    ```javascript
-    function example() {
-      superPower(); // => Flying
-
-      function superPower() {
-        console.log('Flying');
-      }
-    }
-    ```
-
-  - For more information refer to [JavaScript Scoping & Hoisting](http://www.adequatelygood.com/2010/2/JavaScript-Scoping-and-Hoisting) by [Ben Cherry](http://www.adequatelygood.com/)
-
-**[⬆ back to top](#table-of-contents)**
-
 
 
 ## Conditional Expressions & Equality
